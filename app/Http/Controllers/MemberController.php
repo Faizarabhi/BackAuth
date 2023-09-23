@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +17,13 @@ class MemberController extends Controller
      */
     public function index()
     {
-        //
-        // dd('test');
-        return Member::all();
+        try {
+            return Member::all();
+
+        } catch (Exception $e) {
+            return response()->json(['KO' => 'Oops! Unable to find embers.'], 200);
+        }
+
     }
 
     /**
@@ -38,19 +43,19 @@ class MemberController extends Controller
     }
 
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
-    $member = Member::where('email', $credentials['email'])->first();
+    {
+        $credentials = $request->only('email', 'password');
+        $member = Member::where('email', $credentials['email'])->first();
 
-    if (!$member || !Hash::check($credentials['password'], $member->password)) {
-        return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$member || !Hash::check($credentials['password'], $member->password)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $tokenResult = $member->createToken('YourAppToken');
+        $token = $tokenResult->accessToken;
+
+        return response()->json(['token' => $token], 200);
     }
-
-    $tokenResult = $member->createToken('YourAppToken');
-    $token = $tokenResult->accessToken;
-
-    return response()->json(['token' => $token], 200);
-}
     /**
      * Display the specified resource.
      *
@@ -60,8 +65,14 @@ class MemberController extends Controller
     public function show($id)
     {
         //
-        return Member::findOrFail($id);
+        try {
+            return Member::findOrFail($id);
+
+        } catch (Exception $e) {
+            return response()->json(['KO' => 'Oops! Unable to find member.'], 200);
+        }
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -72,12 +83,19 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $member = Member::findOrFail($id);
-        $member->update($request->all());
 
-        return $member;
+
+        try {
+            $member = Member::findOrFail($id);
+            $member->update($request->all());
+
+            return $member;
+
+        } catch (Exception $e) {
+            return response()->json(['KO' => 'Oops! Unable to update member.'], 200);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -87,10 +105,12 @@ class MemberController extends Controller
      */
     public function destroy($id)
     {
-
-        $member = Member::findOrFail($id);
-        return $member->delete();
-
-        return 204;
+        try {
+            $member = Member::findOrFail($id);
+            $member->delete();
+            return response()->json(['OK' => 'The member has been successfully deleted.'], 200);
+        } catch (Exception $e) {
+            return response()->json(['KO' => 'Oops! Unable to delete member.'], 200);
+        }
     }
 }
