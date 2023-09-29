@@ -84,7 +84,7 @@ Request Body:
 ```
 
 Protected Route
-Endpoint: GET /api/user
+Endpoint: GET /api/members/{id}
 Description: Get the authenticated user's details.
 Headers:
 
