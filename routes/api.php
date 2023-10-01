@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
-
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +24,5 @@ Route::post('register', [MemberController::class, 'store']);
 Route::post('login', [MemberController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::resource('members', MemberController::class)->except(['create', 'edit']);
+    Route::resource('tasks', TaskController::class);
 });
-
-

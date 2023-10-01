@@ -122,7 +122,11 @@ This API uses Laravel Passport for authentication. It provides token-based authe
 Make sure to handle authentication using the provided APIs and include the appropriate authorization headers in requests to protected routes.
 
 
-
+GET /api/tasks - Retrieve all tasks
+GET /api/tasks/{id} - Retrieve a specific task
+POST /api/tasks - Create a new task
+PUT /api/tasks/{id} - Update an existing task
+DELETE /api/tasks/{id} - Delete a task
 
 
 
